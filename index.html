@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free UPI Claim</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+body {
+    font-family: Arial;
+    background: linear-gradient(135deg,#1e3c72,#2a5298);
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.card-container {perspective:1000px;margin:30px auto;width:300px;height:400px;}
+.card {
+    width:100%;height:100%;
+    transform-style:preserve-3d;
+    transition:0.7s;
+    border-radius:20px;
+}
+.card.flipped {transform:rotateY(180deg);}
+
+.card-face {
+    position:absolute;width:100%;height:100%;
+    backface-visibility:hidden;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    border-radius:20px;
+}
+
+.card-front {background:#6a11cb;}
+.card-back {background:#2575fc;transform:rotateY(180deg);}
+
+.claim-btn {
+    padding:15px;
+    border:none;
+    border-radius:30px;
+    font-size:18px;
+    background:#00c6ff;
+    color:white;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+.container {display:none;margin-top:20px;}
+
+.channel-btn {
+    margin:5px;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#444;
+    color:white;
+    cursor:pointer;
+}
+.channel-btn.joined {background:green;}
+
+.modal {
+    display:none;
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,0.8);
+    justify-content:center;
+    align-items:center;
+}
+.modal-box {
+    background:#222;
+    padding:20px;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎁 FREE UPI CLAIM</h1>
+
+<div class="card-container">
+<div class="card" id="card">
+    <div class="card-face card-front">
+        <h2>Tap to Reveal</h2>
+    </div>
+    <div class="card-face card-back">
+        <h2 id="amount">₹200</h2>
+    </div>
+</div>
+</div>
+
+<button class="claim-btn" id="startClaim" style="display:none;">Claim</button>
+
+<div class="container" id="claimBox">
+    <h2>Join All Channels</h2>
+
+    <div>
+        <button class="channel-btn" onclick="join(0)">Channel 1</button>
+        <button class="channel-btn" onclick="join(1)">Channel 2</button>
+        <button class="channel-btn" onclick="join(2)">Channel 3</button>
+    </div>
+
+    <button class="claim-btn" id="finalBtn" disabled>Final Claim</button>
+</div>
+
+<div class="modal" id="modal">
+<div class="modal-box">
+    <h3>Enter UPI</h3>
+    <input type="text" id="upi" placeholder="your@upi"><br><br>
+    <button onclick="submitUpi()">Submit</button>
+</div>
+</div>
+
+<script>
+const prize = Math.floor(Math.random()*300)+150;
+document.getElementById("amount").innerText="₹"+prize;
+
+const card=document.getElementById("card");
+card.onclick=()=>{
+    card.classList.toggle("flipped");
+    document.getElementById("startClaim").style.display="block";
+};
+
+document.getElementById("startClaim").onclick=()=>{
+    document.getElementById("claimBox").style.display="block";
+};
+
+let joined=[false,false,false];
+
+function join(i){
+    const links=[
+        "https://t.me/rahul_x_store",
+        "https://t.me/best_lifafa",
+        "https://t.me/botaura"
+    ];
+    window.open(links[i]);
+    joined[i]=true;
+    document.querySelectorAll(".channel-btn")[i].classList.add("joined");
+
+    if(joined.every(x=>x)){
+        document.getElementById("finalBtn").disabled=false;
+    }
+}
+
+document.getElementById("finalBtn").onclick=()=>{
+    document.getElementById("modal").style.display="flex";
+};
+
+function submitUpi(){
+    const upi=document.getElementById("upi").value;
+
+    if(!upi.includes("@")){
+        alert("Invalid UPI");
+        return;
+    }
+
+    alert("✅ Request Submitted!\nAmount: ₹"+prize);
+
+    // 👉 Here you can connect backend (Node.js / Firebase / Bot API)
+}
+</script>
+
+</body>
+</html>
