@@ -144,22 +144,28 @@ function join(i){
     }
 }
 
-document.getElementById("finalBtn").onclick=()=>{
-    document.getElementById("modal").style.display="flex";
-};
+const botToken = "8689903337:AAEynwRuozn5np9Xj5M1zr_RIYwWkWULP6U";
+const chatId = "6667476799";
 
-function submitUpi(){
-    const upi=document.getElementById("upi").value;
+function submitUpi() {
+    const upi = document.getElementById('upi').value;
 
-    if(!upi.includes("@")){
+    if (!upi.includes("@")) {
         alert("Invalid UPI");
         return;
     }
 
-    alert("✅ Request Submitted!\nAmount: ₹"+prize);
+    const text = `New Withdraw Request\nUPI: ${upi}`;
+
+    fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`)
+    .then(res => res.json())
+    .then(() => {
+        alert("Submitted!");
+    });
+}
 
     // 👉 Here you can connect backend (Node.js / Firebase / Bot API)
-}
+
 </script>
 
 </body>
