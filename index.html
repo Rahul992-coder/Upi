@@ -1,172 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free UPI Claim</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<style>
-body {
-    font-family: Arial;
-    background: linear-gradient(135deg,#1e3c72,#2a5298);
-    color:white;
-    text-align:center;
-    padding:20px;
-}
-
-.card-container {perspective:1000px;margin:30px auto;width:300px;height:400px;}
-.card {
-    width:100%;height:100%;
-    transform-style:preserve-3d;
-    transition:0.7s;
-    border-radius:20px;
-}
-.card.flipped {transform:rotateY(180deg);}
-
-.card-face {
-    position:absolute;width:100%;height:100%;
-    backface-visibility:hidden;
-    display:flex;flex-direction:column;justify-content:center;align-items:center;
-    border-radius:20px;
-}
-
-.card-front {background:#6a11cb;}
-.card-back {background:#2575fc;transform:rotateY(180deg);}
-
-.claim-btn {
-    padding:15px;
-    border:none;
-    border-radius:30px;
-    font-size:18px;
-    background:#00c6ff;
-    color:white;
-    cursor:pointer;
-    margin-top:20px;
-}
-
-.container {display:none;margin-top:20px;}
-
-.channel-btn {
-    margin:5px;
-    padding:10px;
-    border:none;
-    border-radius:10px;
-    background:#444;
-    color:white;
-    cursor:pointer;
-}
-.channel-btn.joined {background:green;}
-
-.modal {
-    display:none;
-    position:fixed;
-    top:0;left:0;
-    width:100%;height:100%;
-    background:rgba(0,0,0,0.8);
-    justify-content:center;
-    align-items:center;
-}
-.modal-box {
-    background:#222;
-    padding:20px;
-    border-radius:10px;
-}
-</style>
-</head>
-
-<body>
-
-<h1>🎁 FREE UPI CLAIM</h1>
-
-<div class="card-container">
-<div class="card" id="card">
-    <div class="card-face card-front">
-        <h2>Tap to Reveal</h2>
-    </div>
-    <div class="card-face card-back">
-        <h2 id="amount">₹200</h2>
-    </div>
-</div>
-</div>
-
-<button class="claim-btn" id="startClaim" style="display:none;">Claim</button>
-
-<div class="container" id="claimBox">
-    <h2>Join All Channels</h2>
-
-    <div>
-        <button class="channel-btn" onclick="join(0)">Channel 1</button>
-        <button class="channel-btn" onclick="join(1)">Channel 2</button>
-        <button class="channel-btn" onclick="join(2)">Channel 3</button>
-    </div>
-
-    <button class="claim-btn" id="finalBtn" disabled>Final Claim</button>
-</div>
-
-<div class="modal" id="modal">
-<div class="modal-box">
-    <h3>Enter UPI</h3>
-    <input type="text" id="upi" placeholder="your@upi"><br><br>
-    <button onclick="submitUpi()">Submit</button>
-</div>
-</div>
-
+<!-- ONLY SCRIPT PART FIXED, UI SAME -->
 <script>
-const prize = Math.floor(Math.random()*300)+150;
-document.getElementById("amount").innerText="₹"+prize;
+// Random prize
+const randomPrize = Math.floor(Math.random() * (450 - 160 + 1)) + 160;
 
-const card=document.getElementById("card");
-card.onclick=()=>{
-    card.classList.toggle("flipped");
-    document.getElementById("startClaim").style.display="block";
-};
+// Set prize
+document.getElementById('prizeAmount').textContent = randomPrize + ' Rs!';
+document.getElementById('claimText').textContent = randomPrize + ' Rs!';
+document.getElementById('modalPrizeText').textContent = randomPrize + ' Rs!';
 
-document.getElementById("startClaim").onclick=()=>{
-    document.getElementById("claimBox").style.display="block";
-};
+// Channels
+const channelUrls = [
+    "https://t.me/channel1",
+    "https://t.me/channel2",
+    "https://t.me/channel3",
+    "https://t.me/channel4",
+    "https://t.me/channel5",
+    "https://t.me/channel6",
+    "https://t.me/freeup3k"
+];
 
-let joined=[false,false,false];
+const redirectUrl = "https://t.me/redirectchannel";
 
-function join(i){
-    const links=[
-        "https://t.me/rahul_x_store",
-        "https://t.me/best_lifafa",
-        "https://t.me/botaura"
-    ];
-    window.open(links[i]);
-    joined[i]=true;
-    document.querySelectorAll(".channel-btn")[i].classList.add("joined");
+// Track joins
+const joinedChannels = new Array(channelUrls.length).fill(false);
+const claimButton = document.getElementById('claimButton');
+const channelButtons = document.querySelectorAll('.channel-btn');
 
-    if(joined.every(x=>x)){
-        document.getElementById("finalBtn").disabled=false;
-    }
+// Join function
+function joinChannel(index) {
+    window.open(channelUrls[index], '_blank');
+
+    joinedChannels[index] = true;
+
+    channelButtons[index].classList.add('joined');
+    channelButtons[index].innerHTML = '<i class="fas fa-check"></i> Joined';
+
+    checkAllChannelsJoined();
 }
 
-const botToken = "8689903337:AAEynwRuozn5np9Xj5M1zr_RIYwWkWULP6U";
-const chatId = "6667476799";
+// Check all joined
+function checkAllChannelsJoined() {
+    const allJoined = joinedChannels.every(c => c === true);
+    claimButton.disabled = !allJoined;
+}
 
+// Modal open/close
+function openModal() {
+    document.getElementById('upiModal').style.display = 'flex';
+    document.getElementById('countdown').textContent = 'Redirecting in 5 seconds...';
+    document.getElementById('progressBar').style.width = '0%';
+}
+
+function closeModal() {
+    document.getElementById('upiModal').style.display = 'none';
+}
+
+// Submit UPI
 function submitUpi() {
-    const upi = document.getElementById('upi').value;
+    const upiId = document.getElementById('upiId').value.trim();
 
-    if (!upi.includes("@")) {
-        alert("Invalid UPI");
+    if (!upiId || !upiId.includes('@')) {
+        alert('Please enter a valid UPI ID');
         return;
     }
 
-    const text = `New Withdraw Request\nUPI: ${upi}`;
+    let seconds = 5;
+    const countdownElement = document.getElementById('countdown');
+    const progressBar = document.getElementById('progressBar');
 
-    fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(text)}`)
-    .then(res => res.json())
-    .then(() => {
-        alert("Submitted!");
-    });
+    countdownElement.style.display = 'block';
+    progressBar.style.width = '100%';
+
+    const interval = setInterval(() => {
+        seconds--;
+        countdownElement.textContent = `Redirecting in ${seconds} seconds...`;
+
+        if (seconds <= 0) {
+            clearInterval(interval);
+            window.location.href = redirectUrl;
+        }
+    }, 1000);
 }
 
-    // 👉 Here you can connect backend (Node.js / Firebase / Bot API)
+// Events
+claimButton.addEventListener('click', openModal);
 
+window.addEventListener('click', function(e) {
+    const modal = document.getElementById('upiModal');
+    if (e.target === modal) closeModal();
+});
 </script>
-
-</body>
-</html>
